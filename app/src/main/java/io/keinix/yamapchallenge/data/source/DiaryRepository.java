@@ -1,8 +1,5 @@
 package io.keinix.yamapchallenge.data.source;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.util.Log;
 
 import java.util.List;
@@ -10,6 +7,7 @@ import java.util.List;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import io.keinix.yamapchallenge.data.Diary;
+import io.keinix.yamapchallenge.data.source.remote.NetworkError;
 import io.keinix.yamapchallenge.data.source.remote.RetrofitApiHelper;
 import io.keinix.yamapchallenge.data.source.remote.YamapService;
 import retrofit2.Call;
@@ -21,39 +19,54 @@ public class DiaryRepository {
     private static final String TAG = DiaryRepository.class.getSimpleName();
 
     private MutableLiveData<List<Diary>> mDiaryMutableLiveData;
+    private MutableLiveData<NetworkError> mErrorLiveData;
     private YamapService mYamapService;
 
-    //TODO: add a timeout to stop refreshing
+    //TODO: add a timeout to stop refreshing: include server error dialog
 
-    //TODO: refactor interface out of class
+    // -------------------Public-------------------
 
     public DiaryRepository() {
         mDiaryMutableLiveData = new MutableLiveData<>();
-        mYamapService = RetrofitApiHelper.getApi();
+        mErrorLiveData = new MutableLiveData<>();
+        mYamapService = RetrofitApiHelper.getYamapService();
     }
 
     public LiveData<List<Diary>> getDiaries() {
-        getFeedFromNetwork();
+        getDiariesFromNetwork();
         return mDiaryMutableLiveData;
     }
 
-    private void getFeedFromNetwork() {
+    public LiveData<NetworkError> listenForNetworkError() {
+        return mErrorLiveData;
+    }
+
+    // -------------------Private-------------------
+
+    private void getDiariesFromNetwork() {
         mYamapService.getDiaries().enqueue(new Callback<List<Diary>>() {
             @Override
             public void onResponse(Call<List<Diary>> call, Response<List<Diary>> response) {
-                List<Diary> diaries = null;
-                if (response.body() != null) diaries = response.body();
-                if (diaries != null) updateLiveData(diaries);
+                if (response.body() != null) {
+                     updateLiveData(response.body());
+                } else if (response.code() >= 500) {
+                    postError(NetworkError.SERVER_ERROR);
+                }
             }
 
             @Override
             public void onFailure(Call<List<Diary>> call, Throwable t) {
                 Log.d(TAG, "Retrofit Call Failed: " + t.getMessage());
+                postError(NetworkError.GENERAL_NETWORK_ERROR);
             }
         });
     }
 
     private void updateLiveData(List<Diary> diaries) {
         mDiaryMutableLiveData.setValue(diaries);
+    }
+
+    private void postError(NetworkError error) {
+        mErrorLiveData.setValue(error);
     }
 }

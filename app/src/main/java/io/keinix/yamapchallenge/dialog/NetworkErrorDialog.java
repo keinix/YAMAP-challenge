@@ -1,15 +1,13 @@
 package io.keinix.yamapchallenge.dialog;
 
 import android.content.Context;
-import android.content.Intent;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import io.keinix.yamapchallenge.R;
+import io.keinix.yamapchallenge.utils.LaunchAndroidSettings;
 
-public final class NoNetworkConnectionDialog {
-
-    public static final int REQUEST_CODE_NETWORK_SETTINGS = 102;
+public final class NetworkErrorDialog {
 
     /**
      * Shows an {@link AlertDialog} notifying the user that there is no
@@ -24,19 +22,8 @@ public final class NoNetworkConnectionDialog {
                 .setPositiveButton(R.string.dialog_no_network_positive,
                         (dialogInterface, i) -> {})
                 .setNegativeButton(R.string.dialog_no_network_negative,
-                        (dialogInterface, i) -> sendUserToSettings(context))
+                        (dialogInterface, i) -> LaunchAndroidSettings.launch(context))
                 .create();
         dialog.show();
-    }
-
-    /**
-     * Launchs the Android settings menu
-     * @param context of {@link AppCompatActivity}
-     */
-    private static void sendUserToSettings(Context context) {
-        if (context instanceof AppCompatActivity) {
-            ((AppCompatActivity) context).startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS),
-                    REQUEST_CODE_NETWORK_SETTINGS);
-        }
     }
 }

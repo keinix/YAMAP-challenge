@@ -17,8 +17,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.keinix.yamapchallenge.R;
 import io.keinix.yamapchallenge.data.Diary;
+import io.keinix.yamapchallenge.data.source.remote.NetworkErrorListener;
 import io.keinix.yamapchallenge.details.DetailsActivity;
-import io.keinix.yamapchallenge.dialog.NoNetworkConnectionDialog;
+import io.keinix.yamapchallenge.dialog.NetworkErrorDialog;
+import io.keinix.yamapchallenge.utils.LaunchAndroidSettings;
 import io.keinix.yamapchallenge.utils.NetworkConnection;
 
 public class MainActivity extends AppCompatActivity implements MainAdapter.DiaryClickedListener {
@@ -47,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.Diary
             if (data != null) {
                 updateDiaryTitle(data);
             }
-        } else if (requestCode == NoNetworkConnectionDialog.REQUEST_CODE_NETWORK_SETTINGS) {
+        } else if (requestCode == LaunchAndroidSettings.REQUEST_CODE_NETWORK_SETTINGS) {
             // retry network call after user return for the settings screen
             refreshDiaries();
         }
@@ -64,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.Diary
         mViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         setUpView();
         displayDiaries();
+        listenForNetworkErrors();
     }
 
     // ----------------------Private----------------------
@@ -126,7 +129,14 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.Diary
         } catch (NetworkErrorException e) {
             e.printStackTrace();
         }
-        if (!isConnected) NoNetworkConnectionDialog.show(this);
+        if (!isConnected) NetworkErrorDialog.show(this);
         return isConnected;
+    }
+
+    private void listenForNetworkErrors() {
+        NetworkErrorListener listener = new NetworkErrorListener(this, this,
+                mViewModel.listenForNetworkError());
+        listener.addObserver(networkError -> mSwipeRefreshLayout.setRefreshing(false));
+        listener.start();
     }
 }

@@ -8,7 +8,7 @@ public final class RetrofitApiHelper {
     // Base URL for remote API
     private static final String BASE_URL = "https://s3-ap-northeast-1.amazonaws.com/file.yamap.co.jp/android/";
 
-    public static YamapService getApi() {
+    public static YamapService getYamapService() {
         return new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())

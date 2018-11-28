@@ -12,13 +12,18 @@
     <string name="details_title_empty_hint">*Required</string>
     <string name="details_menu_save_changes">Save Changes</string>
 
-    <!--NoNetworkConnectionDialog-->
+    <!--NetworkErrorDialog-->
     <string name="dialog_no_network_title">No Network Connection</string>
     <string name="dialog_no_network_message">Looks like you\'re not connected to the internet. Please reconnect and try again.</string>
     <string name="dialog_no_network_positive">OK</string>
     <string name="dialog_no_network_negative">SETTINGS</string>
 
+    <!--ServerErrorDialog-->
+    <string name="dialog_server_error_title">Server Problem</string>
+    <string name="dialog_server_error_message">There was an error reaching the YAMAP servers. Please try again later.</string>
+
     <!--NetworkConnection-->
     <string name="exception_connectivity_manager_null">Unable to retrieve Connectivity Manager From Context.</string>
+
 
 </resources>

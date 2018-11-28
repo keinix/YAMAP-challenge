@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import io.keinix.yamapchallenge.data.Diary;
 import io.keinix.yamapchallenge.data.source.DiaryRepository;
+import io.keinix.yamapchallenge.data.source.remote.NetworkError;
 
 public class MainViewModel extends ViewModel {
 
@@ -35,6 +36,10 @@ public class MainViewModel extends ViewModel {
     LiveData<List<Diary>> refreshDiaries() {
         mCachedDiaries = mRepository.getDiaries();
         return mCachedDiaries;
+    }
+
+    LiveData<NetworkError> listenForNetworkError() {
+        return mRepository.listenForNetworkError();
     }
 
 }
