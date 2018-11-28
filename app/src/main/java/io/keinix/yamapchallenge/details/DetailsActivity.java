@@ -60,6 +60,7 @@ public class DetailsActivity extends AppCompatActivity {
         Intent intent = new Intent();
         String newTitle = mTitleEditText.getText().toString();
         int diaryId = getIntent().getIntExtra(MainActivity.EXTRA_DIARY_ID, -1);
+
         intent.putExtra(MainActivity.EXTRA_DIARY_TITLE, newTitle);
         intent.putExtra(MainActivity.EXTRA_DIARY_ID, diaryId);
         setResult(RESULT_OK, intent);

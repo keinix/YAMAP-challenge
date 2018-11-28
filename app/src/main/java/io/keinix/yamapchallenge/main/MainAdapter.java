@@ -6,6 +6,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -60,6 +62,12 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.DiaryViewHolder> {
         notifyDataSetChanged();
     }
 
+    /**
+     * Updates a diary's title if the under changed it in
+     * {@link io.keinix.yamapchallenge.details.DetailsActivity}
+     * @param diaryId Id of diary to be updated
+     * @param newTitle new title for diary
+     */
     void updateTitle(int diaryId, String newTitle) {
         int position = findDiaryPosition(diaryId);
         if (position != DIARY_NOT_FOUND) {
@@ -99,6 +107,19 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.DiaryViewHolder> {
         void bindView(int position) {
             mDiary = mDiaries.get(position);
             diaryTitleTextView.setText(mDiary.getTitle());
+            loadImage();
+        }
+
+        private void loadImage() {
+            String thumbnailUrl = "";
+            if (mDiary.getDiaryImage() != null) {
+                thumbnailUrl = mDiary.getDiaryImage().getThumbnailUrl();
+            }
+            if (thumbnailUrl.length() > 0) {
+                Glide.with(diaryThumbnailImageView)
+                        .load(mDiary.getDiaryImage().getThumbnailUrl())
+                        .into(diaryThumbnailImageView);
+            }
         }
 
         @Override
