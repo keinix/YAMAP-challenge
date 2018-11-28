@@ -1,6 +1,7 @@
 package io.keinix.yamapchallenge.details;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
 import butterknife.BindColor;
 import butterknife.BindString;
 import butterknife.BindView;
@@ -23,6 +24,8 @@ public class DetailsActivity extends AppCompatActivity {
     @BindString(R.string.details_title_empty_toast) String mEmptyTitleToastString;
     @BindString(R.string.details_title_empty_hint) String mEmptyTitleHintString;
 
+    private DetailsViewModel mViewModel;
+
     // ---------------------Override---------------------
 
     @Override
@@ -31,6 +34,7 @@ public class DetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_details);
         ButterKnife.bind(this);
         setTitle(R.string.details_title);
+        mViewModel = ViewModelProviders.of(this).get(DetailsViewModel.class);
         setUpView();
     }
 
@@ -44,7 +48,8 @@ public class DetailsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save_title_edit:
-                if (!titleIsEmpty()) saveTitleChangeAndExit();
+                String newTitle = mTitleEditText.getText().toString();
+                if (!titleIsEmpty(newTitle)) saveTitleChangeAndExit(newTitle);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -52,23 +57,23 @@ public class DetailsActivity extends AppCompatActivity {
     // ---------------------Private---------------------
 
     private void setUpView() {
-        String title =  getIntent().getStringExtra((MainActivity.EXTRA_DIARY_TITLE));
-        if (title != null) mTitleEditText.setText(title);
+        mViewModel.setOriginalTitle(getIntent().getStringExtra((MainActivity.EXTRA_DIARY_TITLE)));
+        if (mViewModel.getOriginalTitle() != null) mTitleEditText.setText(mViewModel.getOriginalTitle());
     }
 
-    private void saveTitleChangeAndExit() {
-        Intent intent = new Intent();
-        String newTitle = mTitleEditText.getText().toString();
-        int diaryId = getIntent().getIntExtra(MainActivity.EXTRA_DIARY_ID, -1);
-
-        intent.putExtra(MainActivity.EXTRA_DIARY_TITLE, newTitle);
-        intent.putExtra(MainActivity.EXTRA_DIARY_ID, diaryId);
-        setResult(RESULT_OK, intent);
+    private void saveTitleChangeAndExit(String newTitle) {
+        if (!mViewModel.newTitleIsSameAsOld(newTitle)) {
+            Intent intent = new Intent();
+            int diaryId = getIntent().getIntExtra(MainActivity.EXTRA_DIARY_ID, -1);
+            intent.putExtra(MainActivity.EXTRA_DIARY_TITLE, newTitle);
+            intent.putExtra(MainActivity.EXTRA_DIARY_ID, diaryId);
+            setResult(RESULT_OK, intent);
+        }
         finish();
     }
 
-    private boolean titleIsEmpty() {
-        boolean isEmpty = mTitleEditText.getText().toString().length() < 1;
+    private boolean titleIsEmpty(String newTitle) {
+        boolean isEmpty = newTitle.length() < 1;
         if (isEmpty) notifyUserOfEmptyTitle();
         return isEmpty;
     }

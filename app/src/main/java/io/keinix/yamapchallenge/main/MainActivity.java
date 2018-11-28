@@ -12,6 +12,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.keinix.yamapchallenge.R;
@@ -23,6 +24,7 @@ import io.keinix.yamapchallenge.utils.NetworkConnection;
 public class MainActivity extends AppCompatActivity implements MainAdapter.DiaryClickedListener {
 
     @BindView(R.id.recycler_view_main) RecyclerView mRecyclerView;
+    @BindView(R.id.main_swipe_refresh_layout) SwipeRefreshLayout mSwipeRefreshLayout;
 
     public static final String EXTRA_DIARY_ID = "EXTRA_DIARY_ID";
     public static final String EXTRA_DIARY_TITLE = "EXTRA_DIARY_TITLE";
@@ -43,11 +45,10 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.Diary
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_EDIT_TITLE) {
             if (data != null) {
-                int id = data.getIntExtra(EXTRA_DIARY_ID, -1);
-                String newTitle = data.getStringExtra(EXTRA_DIARY_TITLE);
-                mAdapter.updateTitle(id, newTitle);
+                updateDiaryTitle(data);
             }
         } else if (requestCode == NoNetworkConnectionDialog.REQUEST_CODE_NETWORK_SETTINGS) {
+            // retry network call after user return for the settings screen
             refreshDiaries();
         }
     }
@@ -57,20 +58,21 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.Diary
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_feed);
+        setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setTitle(R.string.main_title);
         mViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-        setUpRecyclerView();
+        setUpView();
         displayDiaries();
     }
 
     // ----------------------Private----------------------
 
-    private void setUpRecyclerView() {
+    private void setUpView() {
         mAdapter = new MainAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mSwipeRefreshLayout.setOnRefreshListener((this::refreshDiaries));
     }
 
     // will return cached data before making network call
@@ -88,7 +90,10 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.Diary
         }
         if (isConnectedToNetwork()) {
             mDiariesLiveData = mViewModel.refreshDiaries();
-            mDiariesLiveData.observe(this, mAdapter::showDiaries);
+            mDiariesLiveData.observe(this, diaries -> {
+                mAdapter.showDiaries(diaries);
+                mSwipeRefreshLayout.setRefreshing(false);
+            });
         }
     }
 
@@ -97,6 +102,17 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.Diary
         intent.putExtra(EXTRA_DIARY_ID, id);
         intent.putExtra(EXTRA_DIARY_TITLE, diaryTitle);
         startActivityForResult(intent, REQUEST_CODE_EDIT_TITLE);
+    }
+
+    /**
+     * Updates a {@link Diary} title in {@link MainAdapter} if
+     * the title was changed in {@link DetailsActivity}
+     * @param data intent returned from {@link DetailsActivity}
+     */
+    private void updateDiaryTitle(Intent data) {
+        int id = data.getIntExtra(EXTRA_DIARY_ID, -1);
+        String newTitle = data.getStringExtra(EXTRA_DIARY_TITLE);
+        mAdapter.updateTitle(id, newTitle);
     }
 
     /**

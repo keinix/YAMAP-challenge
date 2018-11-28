@@ -114,11 +114,13 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.DiaryViewHolder> {
             String thumbnailUrl = "";
             if (mDiary.getDiaryImage() != null) {
                 thumbnailUrl = mDiary.getDiaryImage().getThumbnailUrl();
-            }
-            if (thumbnailUrl.length() > 0) {
-                Glide.with(diaryThumbnailImageView)
-                        .load(mDiary.getDiaryImage().getThumbnailUrl())
-                        .into(diaryThumbnailImageView);
+                if (thumbnailUrl.length() > 0) {
+                    Glide.with(diaryThumbnailImageView)
+                            .load(mDiary.getDiaryImage().getThumbnailUrl())
+                            .into(diaryThumbnailImageView);
+                }
+            } else {
+                diaryThumbnailImageView.setImageResource(0);
             }
         }
 

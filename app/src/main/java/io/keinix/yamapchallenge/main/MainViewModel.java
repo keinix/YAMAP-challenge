@@ -10,6 +10,7 @@ import io.keinix.yamapchallenge.data.source.DiaryRepository;
 public class MainViewModel extends ViewModel {
 
     private DiaryRepository mRepository;
+
     // used to persists current RecyclerViewData through Config changes
     private LiveData<List<Diary>> mCachedDiaries;
 
