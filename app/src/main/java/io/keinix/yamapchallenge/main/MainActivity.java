@@ -1,5 +1,6 @@
 package io.keinix.yamapchallenge.main;
 
+import android.accounts.NetworkErrorException;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -16,6 +17,8 @@ import butterknife.ButterKnife;
 import io.keinix.yamapchallenge.R;
 import io.keinix.yamapchallenge.data.Diary;
 import io.keinix.yamapchallenge.details.DetailsActivity;
+import io.keinix.yamapchallenge.dialog.NoNetworkConnectionDialog;
+import io.keinix.yamapchallenge.utils.NetworkConnection;
 
 public class MainActivity extends AppCompatActivity implements MainAdapter.DiaryClickedListener {
 
@@ -44,6 +47,8 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.Diary
                 String newTitle = data.getStringExtra(EXTRA_DIARY_TITLE);
                 mAdapter.updateTitle(id, newTitle);
             }
+        } else if (requestCode == NoNetworkConnectionDialog.REQUEST_CODE_NETWORK_SETTINGS) {
+            refreshDiaries();
         }
     }
 
@@ -70,15 +75,21 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.Diary
 
     // will return cached data before making network call
     private void displayDiaries() {
-        LiveData<List<Diary>> liveData = mViewModel.getDiaries();
-        liveData.observe(this, mAdapter::showDiaries);
+        if (isConnectedToNetwork()) {
+            LiveData<List<Diary>> liveData = mViewModel.getDiaries();
+            liveData.observe(this, mAdapter::showDiaries);
+        }
     }
 
     // forces network call
     private void refreshDiaries() {
-        if (mDiariesLiveData.hasObservers()) mDiariesLiveData.removeObservers(this);
-        mDiariesLiveData = mViewModel.refreshDiaries();
-        mDiariesLiveData.observe(this, mAdapter::showDiaries);
+        if (mDiariesLiveData != null && mDiariesLiveData.hasObservers()) {
+            mDiariesLiveData.removeObservers(this);
+        }
+        if (isConnectedToNetwork()) {
+            mDiariesLiveData = mViewModel.refreshDiaries();
+            mDiariesLiveData.observe(this, mAdapter::showDiaries);
+        }
     }
 
     private void launchDetailsActivity(int id, String diaryTitle) {
@@ -86,5 +97,20 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.Diary
         intent.putExtra(EXTRA_DIARY_ID, id);
         intent.putExtra(EXTRA_DIARY_TITLE, diaryTitle);
         startActivityForResult(intent, REQUEST_CODE_EDIT_TITLE);
+    }
+
+    /**
+     * Checks network status with {@link android.net.ConnectivityManager}
+     * @return true if connected to the internet
+     */
+    private boolean isConnectedToNetwork() {
+        boolean isConnected = false;
+        try {
+           isConnected = NetworkConnection.isConnected(this);
+        } catch (NetworkErrorException e) {
+            e.printStackTrace();
+        }
+        if (!isConnected) NoNetworkConnectionDialog.show(this);
+        return isConnected;
     }
 }

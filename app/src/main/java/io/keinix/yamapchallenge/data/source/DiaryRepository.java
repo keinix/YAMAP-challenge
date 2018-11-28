@@ -1,5 +1,8 @@
 package io.keinix.yamapchallenge.data.source;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import java.util.List;
@@ -20,13 +23,13 @@ public class DiaryRepository {
     private RetrofitApiHelper.RetrofitApi mRetrofitApi;
 
 
+
     public DiaryRepository() {
         mDiaryMutableLiveData = new MutableLiveData<>();
         mRetrofitApi = RetrofitApiHelper.getApi();
     }
 
     public LiveData<List<Diary>> getDiaries() {
-        //TODO: add network check
         getFeedFromNetwork();
         return mDiaryMutableLiveData;
     }
@@ -47,10 +50,7 @@ public class DiaryRepository {
                 Log.d(TAG, "Retrofit Call Failed: " + t.getMessage());
             }
         });
-
-
     }
-
 
     private void updateLiveData(List<Diary> diaries) {
         mDiaryMutableLiveData.setValue(diaries);

@@ -7,7 +7,7 @@
         android:id="@+id/action_save_title_edit"
         android:orderInCategory="100"
         android:icon="@drawable/ic_check_white_24"
-        android:title="@string/menu_details_save_changes"
+        android:title="@string/details_menu_save_changes"
         app:showAsAction="ifRoom" />
 
 </menu>

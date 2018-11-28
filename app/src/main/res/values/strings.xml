@@ -8,12 +8,17 @@
     <!--DetailsActivity-->
     <string name="details_title">Details</string>
     <string name="details_title_hint">Enter a new diary title</string>
-    <string name="menu_details_save_changes">Save Changes</string>
     <string name="details_title_empty_toast">Every diary needs a good title!</string>
     <string name="details_title_empty_hint">*Required</string>
+    <string name="details_menu_save_changes">Save Changes</string>
 
     <!--NoNetworkConnectionDialog-->
+    <string name="dialog_no_network_title">No Network Connection</string>
+    <string name="dialog_no_network_message">Looks like you\'re not connected to the internet. Please reconnect and try again.</string>
     <string name="dialog_no_network_positive">OK</string>
     <string name="dialog_no_network_negative">SETTINGS</string>
+
+    <!--NetworkConnection-->
+    <string name="exception_connectivity_manager_null">Unable to retrieve Connectivity Manager From Context.</string>
 
 </resources>
