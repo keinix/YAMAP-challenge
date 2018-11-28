@@ -11,6 +11,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import io.keinix.yamapchallenge.data.Diary;
 import io.keinix.yamapchallenge.data.source.remote.RetrofitApiHelper;
+import io.keinix.yamapchallenge.data.source.remote.YamapService;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -20,13 +21,15 @@ public class DiaryRepository {
     private static final String TAG = DiaryRepository.class.getSimpleName();
 
     private MutableLiveData<List<Diary>> mDiaryMutableLiveData;
-    private RetrofitApiHelper.RetrofitApi mRetrofitApi;
+    private YamapService mYamapService;
 
+    //TODO: add a timeout to stop refreshing
 
+    //TODO: refactor interface out of class
 
     public DiaryRepository() {
         mDiaryMutableLiveData = new MutableLiveData<>();
-        mRetrofitApi = RetrofitApiHelper.getApi();
+        mYamapService = RetrofitApiHelper.getApi();
     }
 
     public LiveData<List<Diary>> getDiaries() {
@@ -35,7 +38,7 @@ public class DiaryRepository {
     }
 
     private void getFeedFromNetwork() {
-        mRetrofitApi.getFeed().enqueue(new Callback<List<Diary>>() {
+        mYamapService.getDiaries().enqueue(new Callback<List<Diary>>() {
             @Override
             public void onResponse(Call<List<Diary>> call, Response<List<Diary>> response) {
                 List<Diary> diaries = null;
