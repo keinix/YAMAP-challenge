@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
@@ -111,12 +112,12 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.DiaryViewHolder> {
         }
 
         private void loadImage() {
-            String thumbnailUrl = "";
             if (mDiary.getDiaryImage() != null) {
-                thumbnailUrl = mDiary.getDiaryImage().getThumbnailUrl();
+                String thumbnailUrl = mDiary.getDiaryImage().getThumbnailUrl();
                 if (thumbnailUrl.length() > 0) {
                     Glide.with(diaryThumbnailImageView)
                             .load(mDiary.getDiaryImage().getThumbnailUrl())
+                            .apply(RequestOptions.placeholderOf(R.drawable.image_placeholder))
                             .into(diaryThumbnailImageView);
                 }
             } else {
