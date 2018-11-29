@@ -133,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.Diary
             e.printStackTrace();
         }
         if (!isConnected) NetworkErrorDialog.show(this);
+        mSwipeRefreshLayout.setRefreshing(false);
         return isConnected;
     }
 
