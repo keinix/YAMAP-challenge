@@ -59,7 +59,9 @@ public class DetailsActivity extends AppCompatActivity {
     private void setUpView() {
         mViewModel.setOriginalTitle(getIntent().getStringExtra((MainActivity.EXTRA_DIARY_TITLE)));
         if (mViewModel.getOriginalTitle() != null) mTitleEditText.setText(mViewModel.getOriginalTitle());
+        mTitleEditText.requestFocus(); // moves cursor to end of title
     }
+
 
     private void saveTitleChangeAndExit(String newTitle) {
         if (!mViewModel.newTitleIsSameAsOld(newTitle)) {
