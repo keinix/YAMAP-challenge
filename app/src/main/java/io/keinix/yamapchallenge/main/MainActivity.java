@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.Diary
     // will return cached data before making a network call
     // this method is NOT used with SwipeRefresh
     private void displayDiaries() {
-        if (isConnectedToNetwork() || mViewModel.getDiaries() != null) {
+        if (isConnectedToNetwork() || mViewModel.hasCachedDiaries()) {
             LiveData<List<Diary>> liveData = mViewModel.getDiaries();
             liveData.observe(this, mAdapter::showDiaries);
         }
