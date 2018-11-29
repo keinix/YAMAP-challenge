@@ -32,7 +32,7 @@ public class NetworkErrorListener {
     }
 
     /**
-     * Listens for any network error and show the correct {@link AlertDialog}
+     * Listens for any network error and shows the correct {@link AlertDialog}
      */
     public void start() {
         mErrorLiveData.observe(mLifecycleOwner, networkError -> {
@@ -74,6 +74,4 @@ public class NetworkErrorListener {
     private void handelGeneralNetworkError() {
         NetworkErrorDialog.show(mContext);
     }
-
-
 }

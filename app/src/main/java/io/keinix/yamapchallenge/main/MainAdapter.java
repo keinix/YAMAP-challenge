@@ -76,6 +76,7 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.DiaryViewHolder> {
             notifyItemChanged(position);
         }
     }
+
     // -------------------Private-------------------
 
     /**

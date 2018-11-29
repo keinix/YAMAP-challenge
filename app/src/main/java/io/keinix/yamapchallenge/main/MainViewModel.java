@@ -45,5 +45,4 @@ public class MainViewModel extends ViewModel {
     LiveData<NetworkError> listenForNetworkError() {
         return mRepository.listenForNetworkError();
     }
-
 }

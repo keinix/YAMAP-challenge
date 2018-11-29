@@ -99,6 +99,4 @@ public class DetailsActivity extends AppCompatActivity {
         mTitleEditText.setHint(mEmptyTitleHintString);
         mTitleEditText.setHintTextColor(mErrorColor);
     }
-
-
 }
