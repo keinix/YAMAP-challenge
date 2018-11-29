@@ -7,6 +7,7 @@ import android.os.Bundle;
 import java.util.List;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.Diary
                 updateDiaryTitle(data);
             }
         } else if (requestCode == LaunchAndroidSettings.REQUEST_CODE_NETWORK_SETTINGS) {
-            // retry network call after user return for the settings screen
+            // retry network call after user returns form the settings screen
             refreshDiaries();
         }
     }
@@ -78,7 +79,8 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.Diary
         mSwipeRefreshLayout.setOnRefreshListener((this::refreshDiaries));
     }
 
-    // will return cached data before making network call
+    // will return cached data before making a network call
+    // this method is NOT used with SwipeRefresh
     private void displayDiaries() {
         if (isConnectedToNetwork()) {
             LiveData<List<Diary>> liveData = mViewModel.getDiaries();
@@ -87,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.Diary
     }
 
     // forces network call
+    // this method is used with SwipeRefresh
     private void refreshDiaries() {
         if (mDiariesLiveData != null && mDiariesLiveData.hasObservers()) {
             mDiariesLiveData.removeObservers(this);
@@ -133,6 +136,10 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.Diary
         return isConnected;
     }
 
+    /**
+     * Sets up a {@link NetworkErrorListener} that will prompt the
+     * user with an {@link AlertDialog} after a network error
+     */
     private void listenForNetworkErrors() {
         NetworkErrorListener listener = new NetworkErrorListener(this, this,
                 mViewModel.listenForNetworkError());

@@ -10,7 +10,9 @@ import io.keinix.yamapchallenge.R;
 import io.keinix.yamapchallenge.main.MainActivity;
 
 import android.content.Intent;
+import android.icu.text.LocaleDisplayNames;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -35,7 +37,11 @@ public class DetailsActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setTitle(R.string.details_title);
         mViewModel = ViewModelProviders.of(this).get(DetailsViewModel.class);
-        setUpView();
+        if (savedInstanceState == null) {
+            // makes sure the original title is not overridden on config change.
+            // It will be compared to the new title before exiting DetailsActivity.
+           setUpView();
+        }
     }
 
     @Override
@@ -48,8 +54,8 @@ public class DetailsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save_title_edit:
-                String newTitle = mTitleEditText.getText().toString();
-                if (!titleIsEmpty(newTitle)) saveTitleChangeAndExit(newTitle);
+                checkMarkMenuOptionClicked();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -62,7 +68,10 @@ public class DetailsActivity extends AppCompatActivity {
         mTitleEditText.requestFocus(); // moves cursor to end of title
     }
 
-
+    /**
+     * Sends updated title back to the last activity on the backstak
+     * @param newTitle of diary that user edited
+     */
     private void saveTitleChangeAndExit(String newTitle) {
         if (!mViewModel.newTitleIsSameAsOld(newTitle)) {
             Intent intent = new Intent();
@@ -72,6 +81,11 @@ public class DetailsActivity extends AppCompatActivity {
             setResult(RESULT_OK, intent);
         }
         finish();
+    }
+
+    private void checkMarkMenuOptionClicked() {
+        String newTitle = mTitleEditText.getText().toString();
+        if (!titleIsEmpty(newTitle)) saveTitleChangeAndExit(newTitle);
     }
 
     private boolean titleIsEmpty(String newTitle) {

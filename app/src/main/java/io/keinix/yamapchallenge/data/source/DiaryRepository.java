@@ -14,6 +14,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+
+/**
+ * Handles retrieving {@link Diary} data
+ */
 public class DiaryRepository {
 
     private static final String TAG = DiaryRepository.class.getSimpleName();
@@ -21,8 +25,6 @@ public class DiaryRepository {
     private MutableLiveData<List<Diary>> mDiaryMutableLiveData;
     private MutableLiveData<NetworkError> mErrorLiveData;
     private YamapService mYamapService;
-
-    //TODO: add a timeout to stop refreshing: include server error dialog
 
     // -------------------Public-------------------
 
@@ -32,6 +34,8 @@ public class DiaryRepository {
         mYamapService = RetrofitApiHelper.getYamapService();
     }
 
+    // This method will also check for locally saved data when
+    // data persistence is implemented
     public LiveData<List<Diary>> getDiaries() {
         getDiariesFromNetwork();
         return mDiaryMutableLiveData;
@@ -51,6 +55,8 @@ public class DiaryRepository {
                      updateLiveData(response.body());
                 } else if (response.code() >= 500) {
                     postError(NetworkError.SERVER_ERROR);
+                } else {
+                    postError(NetworkError.GENERAL_NETWORK_ERROR);
                 }
             }
 

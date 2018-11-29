@@ -10,7 +10,7 @@ public final class LaunchAndroidSettings {
     public static final int REQUEST_CODE_NETWORK_SETTINGS = 102;
 
     /**
-     * Launchs the Android settings menu
+     * Launches the Android settings menu
      * @param context of {@link AppCompatActivity}
      */
     public static void launch(Context context) {

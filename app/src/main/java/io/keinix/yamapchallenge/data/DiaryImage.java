@@ -3,6 +3,9 @@ package io.keinix.yamapchallenge.data;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * Data class inside {@link Diary} containing image data
+ */
 public class DiaryImage {
 
     @Expose

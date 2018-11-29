@@ -92,6 +92,8 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.DiaryViewHolder> {
     }
 
 
+    // -------------------ViewHolders-------------------
+
     class DiaryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         @BindView(R.id.text_view_diary_title) TextView diaryTitleTextView;

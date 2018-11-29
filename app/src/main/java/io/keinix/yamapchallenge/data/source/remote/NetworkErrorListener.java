@@ -18,6 +18,12 @@ public class NetworkErrorListener {
 
     // ----------------------Public----------------------
 
+    /**
+     * Used to prompt the user with network error dialogs.
+     * @param context for launching {@link AlertDialog}
+     * @param lifecycleOwner for monitoring the errorLiveData
+     * @param errorLiveData where network error are posted
+     */
     public NetworkErrorListener(Context context, LifecycleOwner lifecycleOwner,
                                 LiveData<NetworkError> errorLiveData) {
         mLifecycleOwner = lifecycleOwner;
@@ -43,7 +49,8 @@ public class NetworkErrorListener {
 
     /**
      * Optional method: add and extra observer that triggers when a network
-     * error is posted
+     * error is posted. For use of adding additional interactions with a
+     * specific activity / UI.
      * @param observer to add extra functionally when a network error is posted
      */
     public void addObserver(Observer<NetworkError> observer) {

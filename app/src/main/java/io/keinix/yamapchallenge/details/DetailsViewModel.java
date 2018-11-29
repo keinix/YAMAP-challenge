@@ -14,6 +14,8 @@ public class DetailsViewModel extends ViewModel {
         mOriginalTitle = originalTitle;
     }
 
+    // If title is equal, nothing will change when exiting the activity.
+    // used to prevent unnecessary network calls and UI changes
     boolean newTitleIsSameAsOld(String newTitle) {
         return mOriginalTitle.equals(newTitle);
     }

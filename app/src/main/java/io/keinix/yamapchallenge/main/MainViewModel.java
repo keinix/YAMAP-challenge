@@ -38,6 +38,10 @@ public class MainViewModel extends ViewModel {
         return mCachedDiaries;
     }
 
+    /**
+     * Used to listen for Network errors from {@link DiaryRepository}
+     * @return LiveData that will be notified after a network error
+     */
     LiveData<NetworkError> listenForNetworkError() {
         return mRepository.listenForNetworkError();
     }

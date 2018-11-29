@@ -3,6 +3,10 @@ package io.keinix.yamapchallenge.data.source.remote;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * Provides a {@link YamapService} for making network API
+ * calls with Retrofit.
+ */
 public final class RetrofitApiHelper {
 
     // Base URL for remote API
