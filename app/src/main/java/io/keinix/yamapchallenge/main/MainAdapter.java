@@ -17,6 +17,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.keinix.yamapchallenge.R;
 import io.keinix.yamapchallenge.data.Diary;
+import io.keinix.yamapchallenge.details.DetailsActivity;
 
 class MainAdapter extends RecyclerView.Adapter<MainAdapter.DiaryViewHolder> {
 
@@ -24,6 +25,9 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.DiaryViewHolder> {
 
     private List<Diary> mDiaries;
     private DiaryClickedListener mDiaryClickedListener;
+    private boolean mTitleUpdateQuqued;
+    private int mQueuedIdToUpdate;
+    private String mQueuedNewTitle;
 
     /**
      * relays Diary click events to Activity or use case
@@ -60,12 +64,30 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.DiaryViewHolder> {
 
     void showDiaries(List<Diary> diaries) {
         mDiaries = diaries;
+        if (mTitleUpdateQuqued) {
+            updateTitle(mQueuedIdToUpdate, mQueuedNewTitle);
+            mTitleUpdateQuqued = false;
+        }
         notifyDataSetChanged();
     }
 
     /**
+     * Used when {@link MainActivity} is destroyed before It
+     * receives the result from from {@link DetailsActivity}
+     * The title will be updated after the network call returns the
+     * diaries.
+     * @param diaryId Id of diary to be updated
+     * @param newTitle new title for diary
+     */
+    void queueTitleUpdate(int diaryId, String newTitle) {
+        mTitleUpdateQuqued = true;
+        mQueuedIdToUpdate = diaryId;
+        mQueuedNewTitle = newTitle;
+    }
+
+    /**
      * Updates a diary's title if the under changed it in
-     * {@link io.keinix.yamapchallenge.details.DetailsActivity}
+     * {@link DetailsActivity}
      * @param diaryId Id of diary to be updated
      * @param newTitle new title for diary
      */
@@ -84,7 +106,7 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.DiaryViewHolder> {
      * @return the position of the Diary in mDiaries or -1 if not found
      */
     private int findDiaryPosition(int id) {
-        if (id >= 0) {
+        if (id >= 0 && mDiaries != null) {
             for (int i = 0; i < mDiaries.size(); i++) {
                 if (mDiaries.get(i).getId() == id) return i;
             }
