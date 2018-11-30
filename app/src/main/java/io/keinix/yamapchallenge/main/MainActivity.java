@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.Diary
             if (data != null) updateDiaryTitle(data);
         } else if (requestCode == LaunchAndroidSettings.REQUEST_CODE_NETWORK_SETTINGS) {
             // retry network call after user returns form the settings screen
-            refreshDiaries();
+             refreshDiaries();
         }
     }
 

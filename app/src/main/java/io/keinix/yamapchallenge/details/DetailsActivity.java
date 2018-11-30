@@ -56,6 +56,9 @@ public class DetailsActivity extends AppCompatActivity {
             case R.id.action_save_title_edit:
                 checkMarkMenuOptionClicked();
                 break;
+            case android.R.id.home:
+                onBackPressed();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -63,6 +66,7 @@ public class DetailsActivity extends AppCompatActivity {
     // ---------------------Private---------------------
 
     private void setUpView() {
+        if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mViewModel.setOriginalTitle(getIntent().getStringExtra((MainActivity.EXTRA_DIARY_TITLE)));
         if (mViewModel.getOriginalTitle() != null) mTitleEditText.setText(mViewModel.getOriginalTitle());
         mTitleEditText.requestFocus(); // moves cursor to end of title
