@@ -47,9 +47,7 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.Diary
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_EDIT_TITLE) {
-            if (data != null) {
-                updateDiaryTitle(data);
-            }
+            if (data != null) updateDiaryTitle(data);
         } else if (requestCode == LaunchAndroidSettings.REQUEST_CODE_NETWORK_SETTINGS) {
             // retry network call after user returns form the settings screen
             refreshDiaries();
@@ -82,9 +80,13 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.Diary
     // will return cached data before making a network call
     // this method is NOT used with SwipeRefresh
     private void displayDiaries() {
+        mSwipeRefreshLayout.setRefreshing(true);
         if (isConnectedToNetwork() || mViewModel.hasCachedDiaries()) {
             LiveData<List<Diary>> liveData = mViewModel.getDiaries();
-            liveData.observe(this, mAdapter::showDiaries);
+            liveData.observe(this, diaries -> {
+                mSwipeRefreshLayout.setRefreshing(false);
+                mAdapter.showDiaries(diaries);
+            });
         }
     }
 
@@ -118,7 +120,12 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.Diary
     private void updateDiaryTitle(Intent data) {
         int id = data.getIntExtra(EXTRA_DIARY_ID, -1);
         String newTitle = data.getStringExtra(EXTRA_DIARY_TITLE);
-        mAdapter.updateTitle(id, newTitle);
+        if (mAdapter.getItemCount() > 0) {
+            mAdapter.updateTitle(id, newTitle);
+        } else {
+            // wait on network call to return before updating
+            mAdapter.queueTitleUpdate(id, newTitle);
+        }
     }
 
     /**
