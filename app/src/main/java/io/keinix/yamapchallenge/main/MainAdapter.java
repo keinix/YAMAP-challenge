@@ -12,7 +12,9 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
+import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.keinix.yamapchallenge.R;
@@ -121,6 +123,9 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.DiaryViewHolder> {
 
         @BindView(R.id.text_view_diary_title) TextView diaryTitleTextView;
         @BindView(R.id.image_view_diary_thumbnail) ImageView diaryThumbnailImageView;
+        @BindView(R.id.constraint_Layout_diary_item) ConstraintLayout diaryConstraintLayout;
+
+        @BindColor(R.color.colorAccent) int accentColor;
 
         Diary mDiary;
 
@@ -152,6 +157,7 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.DiaryViewHolder> {
 
         @Override
         public void onClick(View view) {
+            diaryConstraintLayout.setBackgroundColor(accentColor);
             mDiaryClickedListener.onDiaryClicked(mDiary.getId(), mDiary.getTitle());
         }
     }
