@@ -3,6 +3,7 @@ package io.keinix.yamapchallenge.main;
 import android.accounts.NetworkErrorException;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import java.util.List;
 
@@ -84,26 +85,21 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.Diary
     private void displayDiaries() {
         mSwipeRefreshLayout.setRefreshing(true);
         if (isConnectedToNetwork() || mViewModel.hasCachedDiaries()) {
-            LiveData<List<Diary>> liveData = mViewModel.getDiaries();
-            liveData.observe(this, diaries -> {
-                mSwipeRefreshLayout.setRefreshing(false);
-                mAdapter.showDiaries(diaries);
-            });
+            mDiariesLiveData = mViewModel.getDiaries();
+            mDiariesLiveData.observe(this, this::showDiaries);
         }
     }
 
     // forces network call
     // this method is used with SwipeRefresh
     private void refreshDiaries() {
+        if (!mSwipeRefreshLayout.isRefreshing()) mSwipeRefreshLayout.setRefreshing(true);
         if (mDiariesLiveData != null && mDiariesLiveData.hasObservers()) {
             mDiariesLiveData.removeObservers(this);
         }
         if (isConnectedToNetwork()) {
             mDiariesLiveData = mViewModel.refreshDiaries();
-            mDiariesLiveData.observe(this, diaries -> {
-                mAdapter.showDiaries(diaries);
-                mSwipeRefreshLayout.setRefreshing(false);
-            });
+            mDiariesLiveData.observe(this, this::showDiaries);
         }
     }
 
@@ -112,6 +108,11 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.Diary
         intent.putExtra(EXTRA_DIARY_ID, id);
         intent.putExtra(EXTRA_DIARY_TITLE, diaryTitle);
         startActivityForResult(intent, REQUEST_CODE_EDIT_TITLE);
+    }
+
+    private void showDiaries(List<Diary> diaries) {
+        mAdapter.showDiaries(diaries);
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     /**

@@ -27,6 +27,11 @@ public final class NetworkErrorDialog {
         dialog.show();
     }
 
+    /**
+     * Use this method if the current state of the AlertDialog needs to be monitored
+     * @param context of {@link AppCompatActivity}
+     * @return an {@link AlertDialog} notifying user of network error
+     */
     public static AlertDialog getAlertDialog(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         return builder.setTitle(R.string.dialog_no_network_title)

@@ -28,7 +28,6 @@ public class DiaryRepository {
     // -------------------Public-------------------
 
     public DiaryRepository() {
-        mDiaryMutableLiveData = new MutableLiveData<>();
         mErrorLiveData = new MutableLiveData<>();
         mYamapService = RetrofitApiHelper.getYamapService();
     }
@@ -36,6 +35,9 @@ public class DiaryRepository {
     // This method will also check for locally saved data when
     // data persistence is implemented
     public LiveData<List<Diary>> getDiaries() {
+        // LiveData needs to be cleared each time so cached
+        // data is not returned
+        mDiaryMutableLiveData = new MutableLiveData<>();
         getDiariesFromNetwork();
         return mDiaryMutableLiveData;
     }
