@@ -26,4 +26,15 @@ public final class NetworkErrorDialog {
                 .create();
         dialog.show();
     }
+
+    public static AlertDialog getAlertDialog(Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        return builder.setTitle(R.string.dialog_no_network_title)
+                .setMessage(R.string.dialog_no_network_message)
+                .setPositiveButton(R.string.dialog_no_network_positive,
+                        (dialogInterface, i) -> {})
+                .setNegativeButton(R.string.dialog_no_network_negative,
+                        (dialogInterface, i) -> LaunchAndroidSettings.launch(context))
+                .create();
+    }
 }

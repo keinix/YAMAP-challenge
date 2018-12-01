@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.Diary
     private MainViewModel mViewModel;
     private MainAdapter mAdapter;
     private LiveData<List<Diary>> mDiariesLiveData;
+    private AlertDialog mNetworkErrorDialog;
 
     // ---------------------Override---------------------
     @Override
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.Diary
             if (data != null) updateDiaryTitle(data);
         } else if (requestCode == LaunchAndroidSettings.REQUEST_CODE_NETWORK_SETTINGS) {
             // retry network call after user returns form the settings screen
-             refreshDiaries();
+            refreshDiaries();
         }
     }
 
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.Diary
         ButterKnife.bind(this);
         setTitle(R.string.main_title);
         mViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        mNetworkErrorDialog = NetworkErrorDialog.getAlertDialog(this);
         setUpView();
         displayDiaries();
         listenForNetworkErrors();
@@ -140,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.Diary
             e.printStackTrace();
         }
         if (!isConnected) {
-            NetworkErrorDialog.show(this);
+            if (!mNetworkErrorDialog.isShowing()) mNetworkErrorDialog.show();
             mSwipeRefreshLayout.setRefreshing(false);
         }
         return isConnected;
