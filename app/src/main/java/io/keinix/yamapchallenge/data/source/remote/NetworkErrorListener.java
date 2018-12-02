@@ -2,7 +2,6 @@ package io.keinix.yamapchallenge.data.source.remote;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.util.Log;
 
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;

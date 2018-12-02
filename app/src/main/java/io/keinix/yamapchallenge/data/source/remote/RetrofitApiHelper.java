@@ -1,5 +1,8 @@
 package io.keinix.yamapchallenge.data.source.remote;
 
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -15,8 +18,16 @@ public final class RetrofitApiHelper {
     public static YamapService getYamapService() {
         return new Retrofit.Builder()
                 .baseUrl(BASE_URL)
+                .client(getClient())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(YamapService.class);
+    }
+
+    private static OkHttpClient getClient() {
+        return new OkHttpClient.Builder()
+                .connectTimeout(13, TimeUnit.SECONDS)
+                .readTimeout(13, TimeUnit.SECONDS)
+                .build();
     }
 }
