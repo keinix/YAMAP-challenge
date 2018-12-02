@@ -3,6 +3,7 @@ package io.keinix.yamapchallenge.main;
 import android.accounts.NetworkErrorException;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.LinearLayout;
 
 import java.util.List;
 
@@ -11,6 +12,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -77,6 +79,9 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.Diary
         mAdapter = new MainAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        DividerItemDecoration divider = new DividerItemDecoration(mRecyclerView.getContext(),
+                LinearLayout.VERTICAL);
+        mRecyclerView.addItemDecoration(divider);
         mSwipeRefreshLayout.setOnRefreshListener((this::refreshDiaries));
     }
 
