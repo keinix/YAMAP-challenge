@@ -35,7 +35,7 @@ public class DetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
         ButterKnife.bind(this);
-        setTitle(R.string.details_title);
+        setUpTitleBar();
         mViewModel = ViewModelProviders.of(this).get(DetailsViewModel.class);
         if (savedInstanceState == null) {
             // makes sure the original title is not overridden on config change.
@@ -66,11 +66,14 @@ public class DetailsActivity extends AppCompatActivity {
     // ---------------------Private---------------------
 
     private void setUpView() {
-        Log.d("FINDME", "Set UP View -----------");
-        if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mViewModel.setOriginalTitle(getIntent().getStringExtra((MainActivity.EXTRA_DIARY_TITLE)));
         if (mViewModel.getOriginalTitle() != null) mTitleEditText.setText(mViewModel.getOriginalTitle());
         mTitleEditText.requestFocus(); // moves cursor to end of title
+    }
+
+    private void setUpTitleBar() {
+        setTitle(R.string.details_title);
+        if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     /**
