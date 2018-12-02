@@ -66,6 +66,7 @@ public class DetailsActivity extends AppCompatActivity {
     // ---------------------Private---------------------
 
     private void setUpView() {
+        Log.d("FINDME", "Set UP View -----------");
         if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mViewModel.setOriginalTitle(getIntent().getStringExtra((MainActivity.EXTRA_DIARY_TITLE)));
         if (mViewModel.getOriginalTitle() != null) mTitleEditText.setText(mViewModel.getOriginalTitle());
