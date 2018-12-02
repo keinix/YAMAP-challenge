@@ -1,6 +1,5 @@
 package io.keinix.yamapchallenge.main;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +12,7 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.keinix.yamapchallenge.R;
@@ -28,7 +25,7 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.DiaryViewHolder> {
 
     private List<Diary> mDiaries;
     private DiaryClickedListener mDiaryClickedListener;
-    private boolean mTitleUpdateQuqued;
+    private boolean mTitleUpdateQueued;
     private int mQueuedIdToUpdate;
     private String mQueuedNewTitle;
 
@@ -67,9 +64,9 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.DiaryViewHolder> {
 
     void showDiaries(List<Diary> diaries) {
         mDiaries = diaries;
-        if (mTitleUpdateQuqued) {
+        if (mTitleUpdateQueued) {
             updateTitle(mQueuedIdToUpdate, mQueuedNewTitle);
-            mTitleUpdateQuqued = false;
+            mTitleUpdateQueued = false;
         }
         notifyDataSetChanged();
     }
@@ -83,7 +80,7 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.DiaryViewHolder> {
      * @param newTitle new title for diary
      */
     void queueTitleUpdate(int diaryId, String newTitle) {
-        mTitleUpdateQuqued = true;
+        mTitleUpdateQueued = true;
         mQueuedIdToUpdate = diaryId;
         mQueuedNewTitle = newTitle;
     }
@@ -116,7 +113,6 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.DiaryViewHolder> {
         }
         return DIARY_NOT_FOUND;
     }
-
 
     // -------------------ViewHolders-------------------
 

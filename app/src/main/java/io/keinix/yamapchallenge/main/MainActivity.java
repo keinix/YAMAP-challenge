@@ -3,7 +3,6 @@ package io.keinix.yamapchallenge.main;
 import android.accounts.NetworkErrorException;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import java.util.List;
 
@@ -51,8 +50,9 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.Diary
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_EDIT_TITLE) {
             if (data != null) updateDiaryTitle(data);
         } else if (requestCode == LaunchAndroidSettings.REQUEST_CODE_NETWORK_SETTINGS) {
-            // retry network call after user returns form the settings screen
-            refreshDiaries();
+            // Check so displayDiaries() is not called at the same time if
+            // activity was destroyed before result
+            if (!mViewModel.isNetworkCallInProgress()) refreshDiaries();
         }
     }
 
@@ -78,6 +78,11 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.Diary
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mSwipeRefreshLayout.setOnRefreshListener((this::refreshDiaries));
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
     // will return cached data before making a network call

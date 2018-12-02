@@ -49,4 +49,13 @@ public class MainViewModel extends ViewModel {
     LiveData<NetworkError> listenForNetworkError() {
         return mRepository.listenForNetworkError();
     }
+
+    /**
+     * Monitors the state of network call made
+     * from mRepository.getDiaries()
+     * @return true if Network call in progress
+     */
+    boolean isNetworkCallInProgress() {
+        return mRepository.isNetworkCallInProgress();
+    }
 }

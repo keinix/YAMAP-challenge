@@ -24,12 +24,13 @@ public class DiaryRepository {
     private MutableLiveData<List<Diary>> mDiaryMutableLiveData;
     private MutableLiveData<NetworkError> mErrorLiveData;
     private YamapService mYamapService;
+    private boolean mNetworkCallInProgress;
 
     // -------------------Public-------------------
 
     public DiaryRepository() {
-        mErrorLiveData = new MutableLiveData<>();
         mYamapService = RetrofitApiHelper.getYamapService();
+        mErrorLiveData = new MutableLiveData<>();
     }
 
     // This method will also check for locally saved data when
@@ -46,12 +47,18 @@ public class DiaryRepository {
         return mErrorLiveData;
     }
 
+    public boolean isNetworkCallInProgress() {
+        return mNetworkCallInProgress;
+    }
+
     // -------------------Private-------------------
 
     private void getDiariesFromNetwork() {
+        mNetworkCallInProgress = true;
         mYamapService.getDiaries().enqueue(new Callback<List<Diary>>() {
             @Override
             public void onResponse(Call<List<Diary>> call, Response<List<Diary>> response) {
+                mNetworkCallInProgress = false;
                 if (response.body() != null) {
                      updateLiveData(response.body());
                 } else if (response.code() >= 500) {
@@ -63,6 +70,7 @@ public class DiaryRepository {
 
             @Override
             public void onFailure(Call<List<Diary>> call, Throwable t) {
+                mNetworkCallInProgress = false;
                 Log.d(TAG, "Retrofit Call Failed: " + t.getMessage());
                 postError(NetworkError.GENERAL_NETWORK_ERROR);
             }
